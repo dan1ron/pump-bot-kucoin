@@ -14,7 +14,7 @@ async def welcome(client, message):
     txt = message.text
     coin = txt.partition('Coin is: ')[2]
     if coin.isupper():
-        pump_bot.buy_coin(coin)
+        buy_coin(coin)
         price.price(coin)
         
 

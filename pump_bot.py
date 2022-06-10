@@ -11,7 +11,6 @@ USDT = 1000
 TARGET_SELL_PERCENTAGE = 100
 
 
-
 def buy_coin(coin_name):
     order = kc_client.create_market_order(coin_name + '-USDT', Client.SIDE_BUY, size=USDT)
     keyboard_sell(coin_name=coin_name, order_id=order['orderId'], pairing_type='USDT')
