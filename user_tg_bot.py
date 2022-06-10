@@ -1,12 +1,13 @@
 from pyrogram import Client, filters
-import price, pump_bot
+import price
+from pump_bot import buy_coin
 
 
 api_id = 000
 api_hash = ''
 TARGET = -1001219293084
 
-app = Client("bot2")
+app = Client("bot")
 
 @app.on_message(filters.chat(TARGET))
 async def welcome(client, message):
@@ -14,7 +15,6 @@ async def welcome(client, message):
     coin = txt.partition('Coin is: ')[2]
     if coin.isupper():
         pump_bot.buy_coin(coin)
-        
         price.price(coin)
         
 
