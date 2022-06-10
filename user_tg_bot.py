@@ -1,4 +1,3 @@
-import threading
 from pyrogram import Client, filters
 import price, pump_bot
 
@@ -9,7 +8,7 @@ TARGET = -1001219293084
 
 app = Client("bot2")
 
-@app.on_message()
+@app.on_message(filters.chat(TARGET))
 async def welcome(client, message):
     txt = message.text
     coin = txt.partition('Coin is: ')[2]
