@@ -1,22 +1,17 @@
 from pynput.keyboard import Listener, KeyCode
-import threading
 from kucoin.client import Client
+import threading
+from config import kc_client, SIZE, PAIRING_TYPE
 
-api_key = 'Your Kucoin API key'
-api_secret = 'Your Kucoin API secret'
-api_passphrase = 'Your Kucoin API passphrase'
-kc_client = Client(api_key, api_secret, api_passphrase)
 
-USDT = 1000
-TARGET_SELL_PERCENTAGE = 100
 
 
 def buy_coin(coin_name):
-    order = kc_client.create_market_order(coin_name + '-USDT', Client.SIDE_BUY, size=USDT)
-    keyboard_sell(coin_name=coin_name, order_id=order['orderId'], pairing_type='USDT')
+    order = kc_client.create_market_order(coin_name + f'-{PAIRING_TYPE}', Client.SIDE_BUY, size=SIZE)
+    entry_price = kc_client.get_fiat_prices(symbol=coin_name)[coin_name]  # or take from bid?
+    keyboard_sell(coin_name=coin_name, order_id=order['orderId'], pairing_type=PAIRING_TYPE)
     print(f"market buy order {order} happened!")
-    keyboard_sell(coin_name, order, 'USDT', )
-    
+    profit_tracker(coin_name, entry_price)
 
 def keyboard_sell(coin_name, order_id, pairing_type):
     ord_bk_fa = kc_client.get_order_book(f"{coin_name}-{pairing_type}")['bids'][0]  # order book first order
@@ -46,3 +41,8 @@ def keyboard_sell(coin_name, order_id, pairing_type):
             listener.join()
 
     threading.Thread(target=key).start()
+
+def profit_tracker(coin_name, entry_price):
+    while True:
+        profit = round(((float(kc_client.get_fiat_prices(symbol=coin_name)[coin_name]) - entry_price) / entry_price) * 100)
+        print(f'~{profit} %')
